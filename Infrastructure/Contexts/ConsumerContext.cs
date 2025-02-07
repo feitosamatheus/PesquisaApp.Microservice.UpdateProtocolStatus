@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiGetewayAppPesquisa.Infrastructure.Contexts;
 
-public class ApiGatewayContext : DbContext
+public class ConsumerContext : DbContext
 {
-    public ApiGatewayContext(DbContextOptions<ApiGatewayContext> options) : base(options) { }
+    public ConsumerContext(DbContextOptions<ConsumerContext> options) : base(options) { }
 
     public virtual DbSet<SurveyResponseDetail> surveyResponseDetail_tb  { get; set; }
     public virtual DbSet<SurveyBaseLine> surveyBaseLine_tb { get; set; }

@@ -1,0 +1,51 @@
+﻿using ApiGetewayAppPesquisa.Application.UseCases.UpdateSurveyReponse;
+using ApiGetewayAppPesquisa.Infrastructure.Contexts;
+using ApiGetewayAppPesquisa.Infrastructure.Interfaces;
+using ApiGetewayAppPesquisa.Infrastructure.Repositorys;
+using ApiGetewayAppPesquisa.Infrastructure.UoW;
+using Microservice.UpdateQuestionnaire.Consumers;
+using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
+using Serilog;
+
+namespace Microservice.UpdateQuestionnaire.Configurations;
+
+public static class ConfigurationApp
+{
+    public static void ConfigureLogger(HostApplicationBuilder builder)
+    {
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .WriteTo.Console()
+            .CreateLogger();
+
+        builder.Logging.ClearProviders();
+        builder.Logging.AddSerilog();
+    }
+
+    public static void ConfigureInjectionDependency(HostApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton<UpdateSurveyResponseUseCase>();
+        builder.Services.AddSingleton<QuestionnaireUpdateConsumer>();
+
+        // Scoped para acesso controlado e seguro
+        builder.Services.AddScoped<ISurveyRepository, SurveyRepository>();
+        builder.Services.AddScoped<IUnityOfWork, UnityOfWork>();
+    }
+
+    public static void ConfigureDatabase(HostApplicationBuilder builder)
+    {
+        builder.Services.AddDbContext<ConsumerContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("PgSqlConnection")));
+    }
+
+    public static void ConfigureRabbitMQ(HostApplicationBuilder builder)
+    {
+        var rabbitMQConfig = builder.Configuration.GetSection("RabbitMQ");
+        builder.Services.AddSingleton<IConnectionFactory>(new ConnectionFactory
+        {
+            HostName = rabbitMQConfig["Host"],
+            Port = int.Parse(rabbitMQConfig["Port"])
+        });
+    }
+}

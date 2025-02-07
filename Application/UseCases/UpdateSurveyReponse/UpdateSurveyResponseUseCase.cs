@@ -6,22 +6,23 @@ namespace ApiGetewayAppPesquisa.Application.UseCases.UpdateSurveyReponse;
 
 public class UpdateSurveyResponseUseCase
 {
-    private readonly ISurveyRepository _surveyRepository;
-    private readonly IUnityOfWork _unityOfWork;
+    private readonly IServiceProvider _serviceProvider;
 
-    public UpdateSurveyResponseUseCase(ISurveyRepository surveyRepository, IUnityOfWork unityOfWork)
+    public UpdateSurveyResponseUseCase(IServiceProvider serviceProvider)
     {
-        _surveyRepository = surveyRepository;
-        _unityOfWork = unityOfWork;
+        _serviceProvider = serviceProvider;
     }
 
     public async Task<bool> ExecuteAsync(QuestionnaireDTO dto, CancellationToken cancellationToken)
     {
+        using var scope = _serviceProvider.CreateScope();
+        var surveyRepository = scope.ServiceProvider.GetRequiredService<ISurveyRepository>();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnityOfWork>();
 
-        var surveyResponse = await _surveyRepository.GetSurveyResponseDetailByProtocolAsync(dto.Protocol, cancellationToken);
+        var surveyResponse = await surveyRepository.GetSurveyResponseDetailByProtocolAsync(dto.Protocol, cancellationToken);
         surveyResponse.UpdateStatus(dto.Status);
         surveyResponse.SurveyBaseLine.UpdateStatus(dto.Status);
-        await _unityOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return true;
     }

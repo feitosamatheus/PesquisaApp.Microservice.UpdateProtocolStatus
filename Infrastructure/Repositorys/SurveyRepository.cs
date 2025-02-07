@@ -8,9 +8,9 @@ namespace ApiGetewayAppPesquisa.Infrastructure.Repositorys;
 
 public class SurveyRepository : ISurveyRepository
 {
-    private readonly ApiGatewayContext _apiGatewayContext;
+    private readonly ConsumerContext _apiGatewayContext;
 
-    public SurveyRepository(ApiGatewayContext apiGatewayContext)
+    public SurveyRepository(ConsumerContext apiGatewayContext)
     {
         _apiGatewayContext = apiGatewayContext;
     }

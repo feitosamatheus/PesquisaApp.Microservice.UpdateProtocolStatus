@@ -5,9 +5,9 @@ namespace ApiGetewayAppPesquisa.Infrastructure.UoW;
 
 public class UnityOfWork : IUnityOfWork
 {
-    private readonly ApiGatewayContext _gatewayContext;
+    private readonly ConsumerContext _gatewayContext;
 
-    public UnityOfWork(ApiGatewayContext gatewayContext)
+    public UnityOfWork(ConsumerContext gatewayContext)
     {
         _gatewayContext = gatewayContext;
     }
