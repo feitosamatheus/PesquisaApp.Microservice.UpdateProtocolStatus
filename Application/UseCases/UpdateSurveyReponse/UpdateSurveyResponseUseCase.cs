@@ -1,5 +1,4 @@
 ﻿using ApiGetewayAppPesquisa.Application.Dtos;
-using ApiGetewayAppPesquisa.Application.Exceptions;
 using ApiGetewayAppPesquisa.Infrastructure.Interfaces;
 
 namespace ApiGetewayAppPesquisa.Application.UseCases.UpdateSurveyReponse;
