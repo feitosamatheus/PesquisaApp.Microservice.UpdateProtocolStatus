@@ -1,11 +1,17 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Channels;
+using System.Threading.Tasks;
+using ApiGetewayAppPesquisa.Application.Dtos;
+using ApiGetewayAppPesquisa.Application.Exceptions;
+using ApiGetewayAppPesquisa.Application.UseCases.UpdateSurveyReponse;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Serilog;
-using UpdateQuestionnaire.Application.Dtos;
-using UpdateQuestionnaire.Application.UseCases.UpdateSurveyReponse;
-using UpdateQuestionnaire.Domain.Exceptions;
 
 namespace Microservice.UpdateQuestionnaire.Consumers;
 
@@ -24,13 +30,13 @@ public class QuestionnaireUpdateConsumer
 
     public async Task ConsumerMessageAsync(CancellationToken cancellationToken)
     {
+
         try
         {
             using var connection = await _connectionFactory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
 
             await channel.QueueDeclareAsync(queue: _queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
-            await channel.QueueDeclareAsync(queue: $"{_queueName}_dlq", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
             var consumer = new AsyncEventingBasicConsumer(channel);
             consumer.ReceivedAsync += async (sender, ea)   =>
@@ -62,6 +68,7 @@ public class QuestionnaireUpdateConsumer
             };
 
             await channel.BasicConsumeAsync(_queueName, autoAck: false, consumer: consumer);
+
         }
         catch (Exception ex)
         {

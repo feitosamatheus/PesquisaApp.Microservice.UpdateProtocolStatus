@@ -1,25 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178
+VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpdateQuestionnaire.Worker", "UpdateQuestionnaire.Worker.csproj", "{BE7B3D52-FAFE-4FF6-8E71-5C39C4AF23CD}"
-	ProjectSection(ProjectDependencies) = postProject
-		{35F1BD48-29DD-4688-9B85-F6D5BB6B355B} = {35F1BD48-29DD-4688-9B85-F6D5BB6B355B}
-		{CF6CD0E6-F61C-496C-875B-BEA0DA28B687} = {CF6CD0E6-F61C-496C-875B-BEA0DA28B687}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateQuestionnaire.Application", "..\UpdateQuestionnaire.Application\UpdateQuestionnaire.Application.csproj", "{35F1BD48-29DD-4688-9B85-F6D5BB6B355B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{067F79E0-4569-4EE8-97E3-468DA2540677} = {067F79E0-4569-4EE8-97E3-468DA2540677}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateQuestionnaire.Domain", "..\UpdateQuestionnaire.Domain\UpdateQuestionnaire.Domain.csproj", "{067F79E0-4569-4EE8-97E3-468DA2540677}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateQuestionnaire.Infrastructure", "..\UpdateQuestionnaire.Infrastructure\UpdateQuestionnaire.Infrastructure.csproj", "{CF6CD0E6-F61C-496C-875B-BEA0DA28B687}"
-	ProjectSection(ProjectDependencies) = postProject
-		{35F1BD48-29DD-4688-9B85-F6D5BB6B355B} = {35F1BD48-29DD-4688-9B85-F6D5BB6B355B}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservice.UpdateQuestionnaire", "Microservice.UpdateQuestionnaire.csproj", "{BE7B3D52-FAFE-4FF6-8E71-5C39C4AF23CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,23 +15,8 @@ Global
 		{BE7B3D52-FAFE-4FF6-8E71-5C39C4AF23CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE7B3D52-FAFE-4FF6-8E71-5C39C4AF23CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE7B3D52-FAFE-4FF6-8E71-5C39C4AF23CD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{35F1BD48-29DD-4688-9B85-F6D5BB6B355B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35F1BD48-29DD-4688-9B85-F6D5BB6B355B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35F1BD48-29DD-4688-9B85-F6D5BB6B355B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35F1BD48-29DD-4688-9B85-F6D5BB6B355B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{067F79E0-4569-4EE8-97E3-468DA2540677}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{067F79E0-4569-4EE8-97E3-468DA2540677}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{067F79E0-4569-4EE8-97E3-468DA2540677}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{067F79E0-4569-4EE8-97E3-468DA2540677}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF6CD0E6-F61C-496C-875B-BEA0DA28B687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF6CD0E6-F61C-496C-875B-BEA0DA28B687}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF6CD0E6-F61C-496C-875B-BEA0DA28B687}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF6CD0E6-F61C-496C-875B-BEA0DA28B687}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {6B76C73D-DF32-4CDA-B871-1A6EAAB23820}
 	EndGlobalSection
 EndGlobal

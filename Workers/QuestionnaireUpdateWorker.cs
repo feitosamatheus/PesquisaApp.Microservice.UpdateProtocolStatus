@@ -15,5 +15,12 @@ public class QuestionnaireUpdateWorker : BackgroundService
         =>  _questionnaireUpdateConsumer = questionnaireUpdateConsumer;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        => await _questionnaireUpdateConsumer.ConsumerMessageAsync(stoppingToken);
+    {
+        //while (!stoppingToken.IsCancellationRequested)
+        //{
+        //    await _questionnaireUpdateConsumer.ConsumerMessageAsync(stoppingToken);
+        //}
+        
+       await _questionnaireUpdateConsumer.ConsumerMessageAsync(stoppingToken);
+    }
 }

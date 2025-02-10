@@ -4,6 +4,7 @@ using Microservice.UpdateQuestionnaire.Workers;
 
 var builder = Host.CreateApplicationBuilder(args);
 
+
 ConfigurationApp.ConfigureLogger(builder);
 ConfigurationApp.ConfigureDatabase(builder);
 ConfigurationApp.ConfigureInjectionDependency(builder);
