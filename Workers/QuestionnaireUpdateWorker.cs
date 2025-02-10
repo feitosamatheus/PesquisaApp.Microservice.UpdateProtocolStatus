@@ -16,6 +16,6 @@ public class QuestionnaireUpdateWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-       await _questionnaireUpdateConsumer.ConsumerMessageAsync(stoppingToken);
+        await _questionnaireUpdateConsumer.ConsumerMessageAsync(stoppingToken);
     }
 }

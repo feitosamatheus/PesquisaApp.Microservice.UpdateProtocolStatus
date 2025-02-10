@@ -41,11 +41,13 @@ public static class ConfigurationApp
 
     public static void ConfigureRabbitMQ(HostApplicationBuilder builder)
     {
-        var rabbitMQConfig = builder.Configuration.GetSection("RabbitMQ");
+        var rabbitMqHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
+        var rabbitMqPort = int.Parse(Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? "5672");
+
         builder.Services.AddSingleton<IConnectionFactory>(new ConnectionFactory
         {
-            HostName = rabbitMQConfig["Host"],
-            Port = int.Parse(rabbitMQConfig["Port"])
+            HostName = rabbitMqHost,
+            Port = rabbitMqPort
         });
     }
 }

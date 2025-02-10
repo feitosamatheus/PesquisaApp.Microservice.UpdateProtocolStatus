@@ -3,7 +3,7 @@ using Microservice.UpdateQuestionnaire.Configurations;
 using Microservice.UpdateQuestionnaire.Workers;
 
 var builder = Host.CreateApplicationBuilder(args);
-
+builder.Configuration.AddEnvironmentVariables();
 
 ConfigurationApp.ConfigureLogger(builder);
 ConfigurationApp.ConfigureDatabase(builder);
