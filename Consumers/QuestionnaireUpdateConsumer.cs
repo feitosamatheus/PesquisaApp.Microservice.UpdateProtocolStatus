@@ -36,7 +36,12 @@ public class QuestionnaireUpdateConsumer
             using var connection = await _connectionFactory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
 
-            await channel.QueueDeclareAsync(queue: _queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            await channel.QueueDeclareAsync(queue: _queueName, durable: true, exclusive: false, autoDelete: false, arguments: new Dictionary<string, object>
+            {
+                { "x-dead-letter-exchange", "" },
+                { "x-dead-letter-routing-key", $"{_queueName}_dlq" }
+            });
+            await channel.QueueDeclareAsync(queue: $"{_queueName}_dlq", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
             var consumer = new AsyncEventingBasicConsumer(channel);
             consumer.ReceivedAsync += async (sender, ea)   =>
