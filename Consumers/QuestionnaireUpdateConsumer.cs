@@ -45,12 +45,10 @@ public class QuestionnaireUpdateConsumer
         catch (BrokerUnreachableException ex)
         {
             Log.Error(ex, "[ERROR][RabbitMQ]: RabbitMQ não está acessível. Tentando novamente em 5 segundos...");
-            await Task.Delay(5000, cancellationToken);
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "[ERROR][INESPERADO]: Erro inesperado ao conectar ao RabbitMQ.");
-            await Task.Delay(5000, cancellationToken);
+            Log.Error(ex, "[ERROR][INESPERADO]: Erro inesperado ao conectar ao RabbitMQ. Tentando novamente em 5 segundos...");
         }
     }
 

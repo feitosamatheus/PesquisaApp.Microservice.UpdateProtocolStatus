@@ -27,8 +27,6 @@ public static class ConfigurationApp
     {
         builder.Services.AddSingleton<UpdateSurveyResponseUseCase>();
         builder.Services.AddSingleton<QuestionnaireUpdateConsumer>();
-
-        // Scoped para acesso controlado e seguro
         builder.Services.AddScoped<ISurveyRepository, SurveyRepository>();
         builder.Services.AddScoped<IUnityOfWork, UnityOfWork>();
     }
@@ -43,11 +41,17 @@ public static class ConfigurationApp
     {
         var rabbitMqHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
         var rabbitMqPort = int.Parse(Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? "5672");
+        var rabbitMqUser = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? "guest";
+        var rabbitMqPassword = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? "guest";
 
         builder.Services.AddSingleton<IConnectionFactory>(new ConnectionFactory
         {
             HostName = rabbitMqHost,
-            Port = rabbitMqPort
+            Port = rabbitMqPort,
+            UserName = rabbitMqUser,
+            Password = rabbitMqPassword,
+            AutomaticRecoveryEnabled = true,
+            NetworkRecoveryInterval = TimeSpan.FromSeconds(5)
         });
     }
 }
