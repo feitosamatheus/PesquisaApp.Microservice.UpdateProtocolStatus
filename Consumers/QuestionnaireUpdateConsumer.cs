@@ -34,50 +34,86 @@ public class QuestionnaireUpdateConsumer
 
     public async Task ConsumerMessageAsync(CancellationToken cancellationToken)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
-            try
-            {
-                await ConfigureConnection();
-                await ConfigureQueuesAsync();
+            await ConfigureConnection();
+            await ConfigureQueuesAsync();
+            await ConfigureConsumer(cancellationToken);
 
-                var consumer = new AsyncEventingBasicConsumer(_channel);
-                consumer.ReceivedAsync += async (sender, ea) =>
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                if (!_channel.IsOpen || !_connection.IsOpen)
                 {
-                    await ProcessMessageAsync(ea, cancellationToken);
-                };
-
-                await _channel.BasicConsumeAsync(_queueName, autoAck: false, consumer: consumer);
-
+                    Log.Warning("[WARNING][RabbitMQ]: Conexão ou canal fechados. Tentando reconectar...");
+                    await Task.Delay(5000, cancellationToken);
+                    await ConfigureConnection();
+                    await ConfigureQueuesAsync();
+                }
+                await Task.Delay(1000, cancellationToken); 
             }
-            catch (BrokerUnreachableException ex)
-            {
-                Log.Error(ex, "[ERROR][RabbitMQ]: RabbitMQ não está acessível. Tentando novamente em 5 segundos...");
-                await Task.Delay(5000, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "[ERROR][INESPERADO]: Erro inesperado ao conectar ao RabbitMQ.");
-                await Task.Delay(5000, cancellationToken);
-            }
+        }
+        catch (BrokerUnreachableException ex)
+        {
+            Log.Error(ex, "[ERROR][RabbitMQ]: RabbitMQ não está acessível. Tentando novamente em 5 segundos...");
+            await Task.Delay(5000, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "[ERROR][INESPERADO]: Erro inesperado ao conectar ao RabbitMQ.");
+            await Task.Delay(5000, cancellationToken);
         }
     }
 
+
     private async Task ConfigureConnection()
     {
-        _connection = await _connectionFactory.CreateConnectionAsync();
-        _channel = await _connection.CreateChannelAsync();
+        Log.Information("config conection");
+        if (_connection == null || !_connection.IsOpen)
+        {
+            Log.Information("config conection é null");
+            _connection?.Dispose();
+            _connection = await _connectionFactory.CreateConnectionAsync();
+        }
+        Log.Information("config chanel");
+
+        if (_channel == null || !_channel.IsOpen)
+        {
+            Log.Information("config chanel é null");
+            _channel?.Dispose();
+            _channel = await _connection.CreateChannelAsync();
+        }
     }
 
     private async Task ConfigureQueuesAsync()
     {
-        await _channel.QueueDeclareAsync(queue: _queueName, durable: true, exclusive: false, autoDelete: false, arguments: new Dictionary<string, object>
+        try
         {
-            { "x-dead-letter-exchange", "" },
-            { "x-dead-letter-routing-key", $"{_queueName}_dlq" }
-        });
-        await _channel.QueueDeclareAsync(queue: $"{_queueName}_dlq", durable: true, exclusive: false, autoDelete: false, arguments: null);
+            await _channel.QueueDeclareAsync(queue: _queueName, durable: true, exclusive: false, autoDelete: false, arguments: new Dictionary<string, object>
+            {
+                { "x-dead-letter-exchange", "" },
+                { "x-dead-letter-routing-key", $"{_queueName}_dlq" }
+            });
+
+            await _channel.QueueDeclareAsync(queue: $"{_queueName}_dlq", durable: true, exclusive: false, autoDelete: false, arguments: null);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "[ERROR][RabbitMQ]: Erro ao configurar as filas.");
+            throw;
+        }
     }
+
+    private async Task ConfigureConsumer(CancellationToken cancellationToken)
+    {
+        var consumer = new AsyncEventingBasicConsumer(_channel);
+        consumer.ReceivedAsync += async (sender, ea) =>
+        {
+            await ProcessMessageAsync(ea, cancellationToken);
+        };
+
+        await _channel.BasicConsumeAsync(_queueName, autoAck: false, consumer: consumer);
+    }
+
 
     public async Task ProcessMessageAsync(BasicDeliverEventArgs ea, CancellationToken cancellationToken)
     {
@@ -93,8 +129,6 @@ public class QuestionnaireUpdateConsumer
             }
 
             await _channel.BasicAckAsync(ea.DeliveryTag, false);
-
-            await Task.Delay(1000, cancellationToken);
         }
         catch (CustomException ex)
         {
