@@ -20,15 +20,17 @@ namespace Microservice.UpdateQuestionnaire.Consumers;
 public class QuestionnaireUpdateConsumer
 {
     private readonly IConnectionFactory _connectionFactory;
-    private IConnection _connection;
-    private IChannel _channel;
     private readonly UpdateSurveyResponseUseCase _updateSurveyResponseUseCase;
     private readonly string _queueName;
+    private readonly int _queueRetryMax;
+    private IConnection _connection;
+    private IChannel _channel;
 
     public QuestionnaireUpdateConsumer(IConnectionFactory connectionFactory, IConfiguration configuration, UpdateSurveyResponseUseCase updateSurveyResponseUseCase)
     {
         _connectionFactory = connectionFactory;
         _queueName = Environment.GetEnvironmentVariable("RABBITMQ_QUEUE_NAME") ?? "questionnaire-update-status";
+        _queueRetryMax = int.Parse(Environment.GetEnvironmentVariable("RABBITMQ_MAX_RETRY") ?? "3");
         _updateSurveyResponseUseCase = updateSurveyResponseUseCase;
     }
 
@@ -39,18 +41,6 @@ public class QuestionnaireUpdateConsumer
             await ConfigureConnection();
             await ConfigureQueuesAsync();
             await ConfigureConsumer(cancellationToken);
-
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                if (!_channel.IsOpen || !_connection.IsOpen)
-                {
-                    Log.Warning("[WARNING][RabbitMQ]: Conexão ou canal fechados. Tentando reconectar...");
-                    await Task.Delay(5000, cancellationToken);
-                    await ConfigureConnection();
-                    await ConfigureQueuesAsync();
-                }
-                await Task.Delay(1000, cancellationToken); 
-            }
         }
         catch (BrokerUnreachableException ex)
         {
@@ -64,21 +54,18 @@ public class QuestionnaireUpdateConsumer
         }
     }
 
-
     private async Task ConfigureConnection()
     {
-        Log.Information("config conection");
         if (_connection == null || !_connection.IsOpen)
         {
-            Log.Information("config conection é null");
+            Log.Warning("Conexão com RabbitMQ será recriada.");
             _connection?.Dispose();
             _connection = await _connectionFactory.CreateConnectionAsync();
         }
-        Log.Information("config chanel");
 
         if (_channel == null || !_channel.IsOpen)
         {
-            Log.Information("config chanel é null");
+            Log.Warning("Canal com RabbitMQ será recriado.");
             _channel?.Dispose();
             _channel = await _connection.CreateChannelAsync();
         }
@@ -106,14 +93,14 @@ public class QuestionnaireUpdateConsumer
     private async Task ConfigureConsumer(CancellationToken cancellationToken)
     {
         var consumer = new AsyncEventingBasicConsumer(_channel);
+        await _channel.BasicConsumeAsync(_queueName, autoAck: false, consumer: consumer);
+
         consumer.ReceivedAsync += async (sender, ea) =>
         {
             await ProcessMessageAsync(ea, cancellationToken);
         };
 
-        await _channel.BasicConsumeAsync(_queueName, autoAck: false, consumer: consumer);
     }
-
 
     public async Task ProcessMessageAsync(BasicDeliverEventArgs ea, CancellationToken cancellationToken)
     {
@@ -127,17 +114,52 @@ public class QuestionnaireUpdateConsumer
             {
                 await _updateSurveyResponseUseCase.ExecuteAsync(questionnaireDTO, cancellationToken);
             }
+            else
+            {
+                await _channel.BasicNackAsync(ea.DeliveryTag, false, false);
+            }
 
             await _channel.BasicAckAsync(ea.DeliveryTag, false);
         }
         catch (CustomException ex)
         {
             Log.Error($"[ERROR]: {ex.Message}");
-            await _channel.BasicNackAsync(ea.DeliveryTag, false, false);
+            await ProcessMessageFailAsync(ea, cancellationToken);
         }
         catch (Exception ex)
         {
             Log.Error($"[ERROR][INESPERADO]: {ex.Message}");
+            await ProcessMessageFailAsync(ea, cancellationToken);
+        }
+    }
+
+    public async Task ProcessMessageFailAsync(BasicDeliverEventArgs ea, CancellationToken cancellationToken)
+    {
+        int retryCount = 0;
+        if (ea.BasicProperties.Headers.TryGetValue("retry-count", out var retryHeader))
+            retryCount = Convert.ToInt32(retryHeader);
+
+        if (retryCount <= _queueRetryMax)
+        {
+            retryCount++;
+
+            var properties = new BasicProperties
+            {
+                Persistent = true,
+                Priority = 9,
+                Expiration = "86400000",
+                AppId = "api_gateway"
+            };
+
+            properties.Headers = new Dictionary<string, object>();
+            properties.Headers["retry-count"] = retryCount;
+
+            var publicationAddress = new PublicationAddress("", "", _queueName);
+            await _channel.BasicPublishAsync(addr: publicationAddress, basicProperties: properties, body: ea.Body, cancellationToken);
+            await _channel.BasicAckAsync(ea.DeliveryTag, false);
+        }
+        else
+        {
             await _channel.BasicNackAsync(ea.DeliveryTag, false, false);
         }
     }
