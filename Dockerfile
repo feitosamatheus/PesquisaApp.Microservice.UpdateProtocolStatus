@@ -10,19 +10,19 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Microservice.UpdateQuestionnaire.csproj", "."]
-RUN dotnet restore "./Microservice.UpdateQuestionnaire.csproj"
+COPY ["Microservice.UpdateProtocolStatus.csproj", "."]
+RUN dotnet restore "./Microservice.UpdateProtocolStatus.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "./Microservice.UpdateQuestionnaire.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./Microservice.UpdateProtocolStatus.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Esta fase é usada para publicar o projeto de serviço a ser copiado para a fase final
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Microservice.UpdateQuestionnaire.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Microservice.UpdateProtocolStatus.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Esta fase é usada na produção ou quando executada no VS no modo normal (padrão quando não está usando a configuração de Depuração)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Microservice.UpdateQuestionnaire.dll"]
+ENTRYPOINT ["dotnet", "Microservice.UpdateProtocolStatus.dll"]

@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
+﻿using System.Text;
 using ApiGetewayAppPesquisa.Application.Dtos;
 using ApiGetewayAppPesquisa.Application.Exceptions;
 using ApiGetewayAppPesquisa.Application.UseCases.UpdateSurveyReponse;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -17,16 +10,16 @@ using Serilog;
 
 namespace Microservice.UpdateQuestionnaire.Consumers;
 
-public class QuestionnaireUpdateConsumer
+public class ProtocolStatusUpdateConsumer
 {
     private readonly IConnectionFactory _connectionFactory;
-    private readonly UpdateSurveyResponseUseCase _updateSurveyResponseUseCase;
+    private readonly ProtocolUpdateStatusUseCase _updateSurveyResponseUseCase;
     private readonly string _queueName;
     private readonly int _queueRetryMax;
     private IConnection _connection;
     private IChannel _channel;
 
-    public QuestionnaireUpdateConsumer(IConnectionFactory connectionFactory, IConfiguration configuration, UpdateSurveyResponseUseCase updateSurveyResponseUseCase)
+    public ProtocolStatusUpdateConsumer(IConnectionFactory connectionFactory, IConfiguration configuration, ProtocolUpdateStatusUseCase updateSurveyResponseUseCase)
     {
         _connectionFactory = connectionFactory;
         _queueName = Environment.GetEnvironmentVariable("RABBITMQ_QUEUE_NAME") ?? "questionnaire-update-status";
@@ -107,10 +100,10 @@ public class QuestionnaireUpdateConsumer
             byte[] body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
 
-            var questionnaireDTO = JsonConvert.DeserializeObject<QuestionnaireDTO>(message);
-            if (questionnaireDTO != null)
+            var protocolDTO = JsonConvert.DeserializeObject<ProtocolDTO>(message);
+            if (protocolDTO != null)
             {
-                await _updateSurveyResponseUseCase.ExecuteAsync(questionnaireDTO, cancellationToken);
+                await _updateSurveyResponseUseCase.ExecuteAsync(protocolDTO, cancellationToken);
             }
             else
             {

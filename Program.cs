@@ -10,7 +10,7 @@ ConfigurationApp.ConfigureDatabase(builder);
 ConfigurationApp.ConfigureInjectionDependency(builder);
 ConfigurationApp.ConfigureRabbitMQ(builder);
 
-builder.Services.AddHostedService<QuestionnaireUpdateWorker>();
+builder.Services.AddHostedService<ProtocolStatusUpdateWorker>();
 
 var host = builder.Build();
 host.Run();

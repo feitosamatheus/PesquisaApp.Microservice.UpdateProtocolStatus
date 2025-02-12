@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservice.UpdateQuestionnaire", "Microservice.UpdateQuestionnaire.csproj", "{BE7B3D52-FAFE-4FF6-8E71-5C39C4AF23CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microservice.UpdateProtocolStatus", "Microservice.UpdateProtocolStatus.csproj", "{BE7B3D52-FAFE-4FF6-8E71-5C39C4AF23CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

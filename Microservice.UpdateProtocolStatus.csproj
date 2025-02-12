@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-Microservice.UpdateQuestionnaire-4622bfda-dda6-4d94-b57a-491815ca09af</UserSecretsId>
+    <UserSecretsId>dotnet-Microservice.UpdateProtocolStatus-4622bfda-dda6-4d94-b57a-491815ca09af</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
   </PropertyGroup>

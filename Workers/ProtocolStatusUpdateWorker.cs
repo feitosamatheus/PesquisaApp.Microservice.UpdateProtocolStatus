@@ -7,11 +7,11 @@ using Microservice.UpdateQuestionnaire.Consumers;
 
 namespace Microservice.UpdateQuestionnaire.Workers;
 
-public class QuestionnaireUpdateWorker : BackgroundService
+public class ProtocolStatusUpdateWorker : BackgroundService
 {
-    private readonly QuestionnaireUpdateConsumer _questionnaireUpdateConsumer;
+    private readonly ProtocolStatusUpdateConsumer _questionnaireUpdateConsumer;
 
-    public QuestionnaireUpdateWorker(QuestionnaireUpdateConsumer questionnaireUpdateConsumer)
+    public ProtocolStatusUpdateWorker(ProtocolStatusUpdateConsumer questionnaireUpdateConsumer)
         =>  _questionnaireUpdateConsumer = questionnaireUpdateConsumer;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

@@ -25,8 +25,8 @@ public static class ConfigurationApp
 
     public static void ConfigureInjectionDependency(HostApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<UpdateSurveyResponseUseCase>();
-        builder.Services.AddSingleton<QuestionnaireUpdateConsumer>();
+        builder.Services.AddSingleton<ProtocolUpdateStatusUseCase>();
+        builder.Services.AddSingleton<ProtocolStatusUpdateConsumer>();
         builder.Services.AddScoped<ISurveyRepository, SurveyRepository>();
         builder.Services.AddScoped<IUnityOfWork, UnityOfWork>();
     }

@@ -3,16 +3,16 @@ using ApiGetewayAppPesquisa.Infrastructure.Interfaces;
 
 namespace ApiGetewayAppPesquisa.Application.UseCases.UpdateSurveyReponse;
 
-public class UpdateSurveyResponseUseCase
+public class ProtocolUpdateStatusUseCase
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public UpdateSurveyResponseUseCase(IServiceProvider serviceProvider)
+    public ProtocolUpdateStatusUseCase(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<bool> ExecuteAsync(QuestionnaireDTO dto, CancellationToken cancellationToken)
+    public async Task<bool> ExecuteAsync(ProtocolDTO dto, CancellationToken cancellationToken)
     {
         using var scope = _serviceProvider.CreateScope();
         var surveyRepository = scope.ServiceProvider.GetRequiredService<ISurveyRepository>();
