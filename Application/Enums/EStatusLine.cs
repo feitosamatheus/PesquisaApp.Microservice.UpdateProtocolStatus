@@ -23,5 +23,11 @@ public enum EStatusLine
     Interrupted = 6,
 
     [Display(Name = "Insucesso")]
-    Insucesso = 7
+    Insucesso = 7,
+
+    [Display(Name = "Em processamento")]
+    InProcessing = 8,
+
+    [Display(Name = "Agendamento")]
+    Scheduling = 9
 }

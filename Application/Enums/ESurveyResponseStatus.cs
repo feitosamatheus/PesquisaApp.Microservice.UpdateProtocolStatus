@@ -20,5 +20,11 @@ public enum ESurveyResponseStatus
     Interrupted = 5,
         
     [Display(Name = "Insucesso")]
-    Insucesso = 6
+    Insucesso = 6,
+
+    [Display(Name = "Em processamento")]
+    InProcessing = 7,
+
+    [Display(Name = "Agendamento")]
+    Scheduling = 8
 }
