@@ -10,7 +10,7 @@ public enum EStatusLine
     [Display(Name = "Em andamento")]
     InProgress = 2,
 
-    [Display(Name = "Realizada")]
+    [Display(Name = "Concluída")]
     Completed = 3,
 
     [Display(Name = "Não atende")]
