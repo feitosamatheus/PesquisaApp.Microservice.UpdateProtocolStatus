@@ -22,7 +22,7 @@ public class ProtocolStatusUpdateConsumer
     public ProtocolStatusUpdateConsumer(IConnectionFactory connectionFactory, IConfiguration configuration, ProtocolUpdateStatusUseCase updateSurveyResponseUseCase)
     {
         _connectionFactory = connectionFactory;
-        _queueName = Environment.GetEnvironmentVariable("RABBITMQ_QUEUE_NAME") ?? "questionnaire-update-status";
+        _queueName = Environment.GetEnvironmentVariable("RABBITMQ_QUEUE_NAME") ?? "protocol-update-status";
         _queueRetryMax = int.Parse(Environment.GetEnvironmentVariable("RABBITMQ_MAX_RETRY") ?? "3");
         _updateSurveyResponseUseCase = updateSurveyResponseUseCase;
     }
@@ -115,7 +115,7 @@ public class ProtocolStatusUpdateConsumer
         catch (CustomException ex)
         {
             Log.Error($"[ERROR]: {ex.Message}");
-            await ProcessMessageFailAsync(ea, cancellationToken);
+            await _channel.BasicNackAsync(ea.DeliveryTag, false, false);
         }
         catch (Exception ex)
         {

@@ -1,5 +1,6 @@
 ﻿using ApiGetewayAppPesquisa.Application.Dtos;
 using ApiGetewayAppPesquisa.Infrastructure.Interfaces;
+using Microservice.UpdateProtocolStatus.Application.Exceptions;
 
 namespace ApiGetewayAppPesquisa.Application.UseCases.UpdateSurveyReponse;
 
@@ -14,6 +15,9 @@ public class ProtocolUpdateStatusUseCase
 
     public async Task<bool> ExecuteAsync(ProtocolDTO dto, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(dto.Protocol) || string.IsNullOrEmpty(dto.Status))
+            throw new ValueIsNullException("Os valores fornecidos estão nulos ou vazio.");
+
         using var scope = _serviceProvider.CreateScope();
         var surveyRepository = scope.ServiceProvider.GetRequiredService<ISurveyRepository>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnityOfWork>();
