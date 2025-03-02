@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y wget && \
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Microservice.Microservice.UpdateProtocolStatus.csproj", "."]
+COPY ["Microservice.UpdateProtocolStatus.csproj", "."]
 RUN dotnet restore "./Microservice.UpdateProtocolStatus.csproj"
 COPY . .
 WORKDIR "/src/."
