@@ -29,5 +29,8 @@ public enum EStatusLine
     InProcessing = 8,
 
     [Display(Name = "Agendamento")]
-    Scheduling = 9
+    Scheduling = 9,
+
+    [Display(Name = "Proposta")]
+    Proposal = 10
 }

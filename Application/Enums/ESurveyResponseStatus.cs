@@ -26,5 +26,8 @@ public enum ESurveyResponseStatus
     InProcessing = 7,
 
     [Display(Name = "Agendamento")]
-    Scheduling = 8
+    Scheduling = 8,
+
+    [Display(Name = "Proposta")]
+    Proposal = 9
 }
