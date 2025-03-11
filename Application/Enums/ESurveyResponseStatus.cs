@@ -7,7 +7,7 @@ public enum ESurveyResponseStatus
     [Display(Name = "Em andamento")]
     InProgress = 1,
 
-    [Display(Name = "Concluída")]
+    [Display(Name = "Realizada")]
     Completed = 2,
 
     [Display(Name = "Não atende")]
