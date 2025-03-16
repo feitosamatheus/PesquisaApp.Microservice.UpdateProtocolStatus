@@ -4,30 +4,33 @@ namespace ApiGetewayAppPesquisa.Application.Enums;
 
 public enum ESurveyResponseStatus
 {
+    [Display(Name = "Pendente")]
+    Pending = 1,
+
     [Display(Name = "Em andamento")]
-    InProgress = 1,
+    InProgress = 2,
 
     [Display(Name = "Realizada")]
-    Completed = 2,
+    Completed = 3,
 
     [Display(Name = "Não atende")]
-    NoAnswer = 3,
+    NoAnswer = 4,
 
     [Display(Name = "Número invalido")]
-    InvalidNumber = 4,
-        
+    InvalidNumber = 5,
+
     [Display(Name = "Interrompida")]
-    Interrupted = 5,
-        
+    Interrupted = 6,
+
     [Display(Name = "Insucesso")]
-    Insucesso = 6,
+    Insucesso = 7,
 
     [Display(Name = "Em processamento")]
-    InProcessing = 7,
+    InProcessing = 8,
 
     [Display(Name = "Agendamento")]
-    Scheduling = 8,
+    Scheduling = 9,
 
     [Display(Name = "Proposta")]
-    Proposal = 9
+    Proposal = 10
 }
