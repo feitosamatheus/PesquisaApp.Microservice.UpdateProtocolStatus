@@ -32,5 +32,14 @@ public enum ESurveyResponseStatus
     Scheduling = 9,
 
     [Display(Name = "Proposta")]
-    Proposal = 10
+    Proposal = 10,
+
+    [Display(Name = "Caixa Postal")]
+    VoicemailOrOutOfService = 11,
+
+    [Display(Name = "Ligação Muda")]
+    SilentCall = 12,
+
+    [Display(Name = "Recusa")]
+    Refused = 13,
 }
