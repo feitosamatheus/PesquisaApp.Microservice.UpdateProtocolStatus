@@ -42,4 +42,10 @@ public enum EStatusLine
 
     [Display(Name = "Recusa")]
     Refused = 13,
+
+    [Display(Name = "Proposta aceita")]
+    ProposalAceppt = 14,
+
+    [Display(Name = "Proposta recusada")]
+    ProposalRefused = 15
 }
